@@ -62,7 +62,13 @@
               "buildTarget": "PintaMedia:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "options": {
+            "headers": {
+              "Cross-Origin-Opener-Policy": "same-origin",
+              "Cross-Origin-Embedder-Policy": "require-corp"
+            }
+          }
         },
         "test": {
           "builder": "@angular/build:unit-test"
