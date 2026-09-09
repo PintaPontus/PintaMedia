@@ -9,12 +9,10 @@ export class FfmpegService {
   private readonly ffmpeg = new FFmpeg();
 
   async load() {
-    console.log("crossOriginIsolated", crossOriginIsolated);
     const baseURL = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core-mt@0.12.10/dist/esm';
-    // const baseURL = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm';
 
     this.ffmpeg.on('log', ({type, message}) => {
-      console.log(`[ffmpeg:${type}]`, message);   // <-- guarda qui la causa vera
+      console.log(`[ffmpeg:${type}]`, message);
       this.message.set(message);
     });
     this.ffmpeg.on('progress', ({progress, time}) => {
@@ -38,14 +36,10 @@ export class FfmpegService {
 
   async transcode() {
     await this.ffmpeg.writeFile('input.webm', await fetchFile('https://raw.githubusercontent.com/ffmpegwasm/testdata/master/Big_Buck_Bunny_180_10s.webm'));
-    // CORRETTO: un elemento per ogni token
-    const args = ['-i', 'input.webm', '-threads', '4', '-c:v', 'libx264', '-preset', 'ultrafast', 'output.mp4'];
-    console.log('ffmpeg args:', args);
-    console.log('ffmpeg transcode inizio');
-    const code = await this.ffmpeg.exec(args);
-    console.log('ffmpeg transcode fine: ', code);
+    await this.ffmpeg.exec(
+      ['-i', 'input.webm', '-threads', '8', '-c:v', 'libx264', '-preset', 'ultrafast', 'output.mp4']
+    );
     const data = await this.ffmpeg.readFile('output.mp4') as Uint8Array<ArrayBuffer>;
-    console.log('ffmpeg transcode data: ', data);
     return URL.createObjectURL(new Blob([data], {type: 'video/mp4'}));
   }
 }
